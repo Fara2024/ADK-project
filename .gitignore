@@ -1,0 +1,10 @@
+# creating the venv: py -m venv .venv
+# activating venv: .venv\Scripts\activate
+# run on vscode: uvicorn app:app --host 0.0.0.0 --port 8000 --reload
+# docker is running 
+# docker-compose up -d --build
+# docker-compose logs -f
+# postman :
+# method: post, key: file, address: http://127.0.0.1:8000/process-pdf 
+.env
+.README.md

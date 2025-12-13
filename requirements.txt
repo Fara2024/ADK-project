@@ -1,0 +1,8 @@
+google-adk
+pandas
+scikit-learn
+numpy
+fastapi
+uvicorn
+google-genai 
+tempfile
