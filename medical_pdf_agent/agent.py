@@ -1,12 +1,12 @@
 # =================================================================
-# فایل: medical_pdf_agent/agent.py
-# وظیفه: دسته‌بندی اولیه و انتخاب مسیر روتینگ
+# medical_pdf_agent/agent.py
+# 
 # =================================================================
 from google.adk.agents import Agent
 from google.adk.tools import FunctionTool
 from typing import Dict, Any
 
-# --- توابع ابزار روتینگ ---
+# --- routing function---
 
 def route_to_diabetes_model() -> Dict[str, str]:
     """
@@ -56,9 +56,8 @@ def ignore_document() -> Dict[str, Any]:
     }
 
 
-# --- تعریف Agent روتر اصلی ---
+# --- main Agent rout---
 
-# این همان root_agent ایه که ADK ازش استفاده می‌کنه
 root_agent = Agent(
     name="medical_pdf_router",
     model="gemini-2.5-flash", 
