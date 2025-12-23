@@ -1,6 +1,5 @@
 # =================================================================
 # فایل: my_agent/agent.py
-# وظیفه: بارگذاری مدل ML و تعریف Agent برای استخراج داده و پیش‌بینی
 # =================================================================
 import pickle
 import pandas as pd
@@ -9,13 +8,11 @@ from google.adk.agents.llm_agent import Agent
 from google.adk.tools import FunctionTool
 from typing import Dict, Any, List
 
-# 🚨 اصلاح مسیر: استفاده از مسیر نسبی
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, 'final_diabetes_model.pkl')
 
 LOADED_MODEL = None
 
-# لیست ویژگی‌ها (بدون تغییر)
 MODEL_EXPECTED_FEATURES: List[str] = [
     'GenderFemale1Male2', 'Ageyears', 'Heightm', 'Weightkg', 'BMIkgm2', 
     'SmokingHistorypackyear', 'AlcoholDrinkingHistorydrinkernondrinker', 
@@ -72,7 +69,7 @@ MODEL_EXPECTED_FEATURES: List[str] = [
     'Other_drug_Shen_Shuai_Ning_capsule'
 ]
 
-# --- بارگذاری مدل ---
+# 
 try:
     with open(MODEL_PATH, 'rb') as file:
         LOADED_MODEL = pickle.load(file)
@@ -94,14 +91,14 @@ def predict_data_outcome(data_features: Dict[str, Any]) -> str:
     if LOADED_MODEL is None:
         return "خطا: مدل یادگیری ماشین در دسترس نیست."
 
-    # --- مکانیزم رفع مشکل: تکمیل ورودی‌ها (برای اطمینان از وجود تمام 148 ویژگی) ---
+    #  
     input_data = {}
     for feature in MODEL_EXPECTED_FEATURES:
-        # اگر LLM ویژگی را فرستاده بود، آن را بپذیر؛ در غیر این صورت، مقدار پیش‌فرض 0 را قرار بده.
+        #
         input_data[feature] = data_features.get(feature, 0)
     
     try:
-        # تبدیل دیکشنری به DataFrame با یک ردیف
+        #  turning DataFrame to dictionary
         input_df = pd.DataFrame([input_data])
         
         prediction = LOADED_MODEL.predict(input_df)
@@ -112,10 +109,10 @@ def predict_data_outcome(data_features: Dict[str, Any]) -> str:
     except Exception as e:
         return f"خطا در هنگام پیش‌بینی: مطمئن شوید تمام ویژگی‌های لازم به درستی ارائه شده‌اند. جزئیات خطا: {e}"
 
-# --- تعریف Agent تخصصی دیابت ---
+# Diabet Agent 
 prediction_tool = FunctionTool(func=predict_data_outcome)
 
-# 🚨 تغییر نام Agent برای جلوگیری از تداخل با root_agent روتر اصلی
+# 
 diabetes_analyst_agent = Agent(
     model='gemini-2.5-flash',
     name='diabetes_ml_analyst',
