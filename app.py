@@ -1,5 +1,4 @@
 # =================================================================
-# app.py - نسخه اصلاح شده برای حل مشکل Session و تشخیص PDF دیابت
 # =================================================================
 
 import os
@@ -8,26 +7,26 @@ import uuid
 import tempfile
 from fastapi import FastAPI, UploadFile, File, HTTPException
 
-# ---- اطمینان از مسیر پروژه ----
+# 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 if PROJECT_DIR not in sys.path:
     sys.path.insert(0, PROJECT_DIR)
 
-# ---- ایمپورت ایجنت‌ها از مسیر پروژه ----
+# 
 from medical_pdf_agent.agent import root_agent as router_agent
 from my_agent.agent import diabetes_analyst_agent
 
-# ---- ایمپورت ADK ----
+# 
 from google.adk.runners import InMemoryRunner, RunConfig
 from google.genai.types import Content, Part, Blob
 
 APP_NAME = "medical_pdf_router_app"
 
-# ---- ساخت runner با app_name صحیح ----
+# 
 router_runner = InMemoryRunner(agent=router_agent, app_name=APP_NAME)
 diabetes_runner = InMemoryRunner(agent=diabetes_analyst_agent, app_name=APP_NAME)
 
-# ---- تابع اجرای ایجنت روی PDF ----
+# 
 def run_agent_on_pdf(runner, instruction, pdf_path, session_id):
     with open(pdf_path, "rb") as f:
         pdf_bytes = f.read()
@@ -55,11 +54,11 @@ def run_agent_on_pdf(runner, instruction, pdf_path, session_id):
                     full_text += p.text
     return full_text
 
-# ---- اجرای روتر و تصمیم گیری ----
+# 
 def route_pdf(pdf_path):
     session_id = str(uuid.uuid4())
 
-    # دستور روتر
+    #
     router_instruction = (
         "این سند پزشکی را بررسی کن و فقط یکی از ابزارهای روتینگ زیر را فراخوانی کن:\n"
         "- route_to_diabetes_model\n"
@@ -73,7 +72,7 @@ def route_pdf(pdf_path):
     tool_name = None
     chosen_model = None
 
-    # تشخیص ابزار
+    # 
     if "route_to_diabetes_model" in router_output or '"chosen_model": "diabetes_ml_analyst"' in router_output:
         tool_name = "route_to_diabetes_model"
         chosen_model = "diabetes_ml_analyst"
@@ -84,7 +83,7 @@ def route_pdf(pdf_path):
         tool_name = "route_to_breast_cancer_model"
         chosen_model = "breast_cancer_model"
 
-    # اجرای ایجنت دیابت در صورت نیاز
+    # 
     agent_output = None
     if chosen_model == "diabetes_ml_analyst":
         agent_instruction = "تمام 148 ویژگی را از PDF استخراج کن و پیش‌بینی کن. فقط خروجی نهایی ابزار را برگردان."
